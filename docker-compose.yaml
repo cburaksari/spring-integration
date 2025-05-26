@@ -1,0 +1,30 @@
+services:
+  legacy:
+    container_name: legacy
+    build:
+      context: ./legacy
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+      - "9091:9091"
+    networks:
+      - my-network
+
+  modern:
+    container_name: modern
+    build:
+      context: ./modern
+      dockerfile: Dockerfile
+    depends_on:
+      - legacy
+    environment:
+      - LEGACY_HOST=legacy
+      - LEGACY_PORT=9091
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
